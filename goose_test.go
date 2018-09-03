@@ -24,6 +24,26 @@ func TestDefaultBinary(t *testing.T) {
 	}
 }
 
+func TestDefaultBinaryWithSpecifiedTableName(t *testing.T) {
+	commands := []string{
+		"go build -i -o goose ./cmd/goose",
+		"./goose -dir=examples/sql-migrations sqlite3 sql2.db up goose_db_version_2",
+		"./goose -dir=examples/sql-migrations sqlite3 sql2.db version goose_db_version_2",
+		"./goose -dir=examples/sql-migrations sqlite3 sql2.db down goose_db_version_2",
+		"./goose -dir=examples/sql-migrations sqlite3 sql2.db status goose_db_version_2",
+	}
+
+	for _, cmd := range commands {
+		args := strings.Split(cmd, " ")
+		out, err := exec.Command(args[0], args[1:]...).CombinedOutput()
+		if err != nil {
+			t.Fatalf("%s:\n%v\n\n%s", err, cmd, out)
+		}
+	}
+}
+
+
+
 func TestCustomBinary(t *testing.T) {
 	commands := []string{
 		"go build -i -o custom-goose ./examples/go-migrations",
