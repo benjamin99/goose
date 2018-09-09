@@ -9,10 +9,10 @@ import (
 func TestDefaultBinary(t *testing.T) {
 	commands := []string{
 		"go build -i -o goose ./cmd/goose",
-		"./goose -dir=examples/sql-migrations sqlite3 sql.db up",
-		"./goose -dir=examples/sql-migrations sqlite3 sql.db version",
-		"./goose -dir=examples/sql-migrations sqlite3 sql.db down",
-		"./goose -dir=examples/sql-migrations sqlite3 sql.db status",
+		"./goose -d examples/sql-migrations sqlite3 sql.db up",
+		"./goose -d examples/sql-migrations sqlite3 sql.db version",
+		"./goose -d examples/sql-migrations sqlite3 sql.db down",
+		"./goose -d examples/sql-migrations sqlite3 sql.db status",
 	}
 
 	for _, cmd := range commands {
@@ -27,10 +27,10 @@ func TestDefaultBinary(t *testing.T) {
 func TestDefaultBinaryWithSpecifiedTableName(t *testing.T) {
 	commands := []string{
 		"go build -i -o goose ./cmd/goose",
-		"./goose -dir=examples/sql-migrations sqlite3 sql2.db up goose_db_version_2",
-		"./goose -dir=examples/sql-migrations sqlite3 sql2.db version goose_db_version_2",
-		"./goose -dir=examples/sql-migrations sqlite3 sql2.db down goose_db_version_2",
-		"./goose -dir=examples/sql-migrations sqlite3 sql2.db status goose_db_version_2",
+		"./goose -d examples/sql-migrations sqlite3 sql2.db up -t goose_db_version_2",
+		"./goose -d examples/sql-migrations sqlite3 sql2.db version -t goose_db_version_2",
+		"./goose -d examples/sql-migrations sqlite3 sql2.db down -t goose_db_version_2",
+		"./goose -d examples/sql-migrations sqlite3 sql2.db status -t goose_db_version_2",
 	}
 
 	for _, cmd := range commands {

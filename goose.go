@@ -14,19 +14,20 @@ var (
 )
 
 // Run runs a goose command.
-func Run(command string, db *sql.DB, dir string, args ...string) error {
+func Run(command string, db *sql.DB, dir string, table string, args ...string) error {
+
 	switch command {
 	case "up":
-		if len(args) > 0 {
-			SetTableName(args[0])
+		if table != "" {
+			SetTableName(table)
 		}
 
 		if err := Up(db, dir); err != nil {
 			return err
 		}
 	case "up-by-one":
-		if len(args) > 0 {
-			SetTableName(args[0])
+		if table != "" {
+			SetTableName(table)
 		}
 
 		if err := UpByOne(db, dir); err != nil {
@@ -42,8 +43,8 @@ func Run(command string, db *sql.DB, dir string, args ...string) error {
 			return fmt.Errorf("version must be a number (got '%s')", args[0])
 		}
 
-		if len(args) > 1 {
-			SetTableName(args[1])
+		if table != "" {
+			SetTableName(table)
 		}
 
 		if err := UpTo(db, dir, version); err != nil {
@@ -62,8 +63,8 @@ func Run(command string, db *sql.DB, dir string, args ...string) error {
 			return err
 		}
 	case "down":
-		if len(args) > 0 {
-			SetTableName(args[0])
+		if table != "" {
+			SetTableName(table)
 		}
 
 		if err := Down(db, dir); err != nil {
@@ -79,40 +80,40 @@ func Run(command string, db *sql.DB, dir string, args ...string) error {
 			return fmt.Errorf("version must be a number (got '%s')", args[0])
 		}
 
-		if len(args) > 1 {
-			SetTableName(args[1])
+		if table != "" {
+			SetTableName(table)
 		}
 
 		if err := DownTo(db, dir, version); err != nil {
 			return err
 		}
 	case "redo":
-		if len(args) > 0 {
-			SetTableName(args[0])
+		if table != "" {
+			SetTableName(table)
 		}
 
 		if err := Redo(db, dir); err != nil {
 			return err
 		}
 	case "reset":
-		if len(args) > 0 {
-			SetTableName(args[0])
+		if table != "" {
+			SetTableName(table)
 		}
 
 		if err := Reset(db, dir); err != nil {
 			return err
 		}
 	case "status":
-		if len(args) > 0 {
-			SetTableName(args[0])
+		if table != "" {
+			SetTableName(table)
 		}
 
 		if err := Status(db, dir); err != nil {
 			return err
 		}
 	case "version":
-		if len(args) > 0 {
-			SetTableName(args[0])
+		if table != "" {
+			SetTableName(table)
 		}
 
 		if err := Version(db, dir); err != nil {

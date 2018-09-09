@@ -2,11 +2,10 @@ package main
 
 import (
 	"database/sql"
-	"flag"
+	"github.com/benjamin99/goose"
+	"github.com/jessevdk/go-flags"
 	"log"
 	"os"
-
-	"github.com/benjamin99/goose"
 
 	// Init DB drivers.
 	_ "github.com/go-sql-driver/mysql"
@@ -15,35 +14,31 @@ import (
 	_ "github.com/ziutek/mymysql/godrv"
 )
 
-var (
-	flags = flag.NewFlagSet("goose", flag.ExitOnError)
-	dir   = flags.String("dir", ".", "directory with migration files")
-)
-
 func main() {
-	flags.Usage = usage
-	flags.Parse(os.Args[1:])
+	var opt struct {
+		Dir   string `short:"d" long:"Dir" description:"directory with migration files"`
+		Table string `short:"t" long:"Table" description:"the version Table"`
+		Help  bool   `shot:"h" long:"Help"`
+	}
 
-	args := flags.Args()
+	args, err := flags.ParseArgs(&opt, os.Args)
+	if err != nil {
+		log.Fatal("failed to parse args", err)
+	}
 
 	if len(args) > 1 && args[0] == "create" {
-		if err := goose.Run("create", nil, *dir, args[1:]...); err != nil {
+		if err := goose.Run("create", nil, opt.Dir, opt.Table, args[1:]...); err != nil {
 			log.Fatalf("goose run: %v", err)
 		}
 		return
 	}
 
-	if len(args) < 3 {
-		flags.Usage()
+	if len(args) < 3 || opt.Help {
+		usage()
 		return
 	}
 
-	if args[0] == "-h" || args[0] == "--help" {
-		flags.Usage()
-		return
-	}
-
-	driver, dbstring, command := args[0], args[1], args[2]
+	driver, dbstring, command := args[1], args[2], args[3]
 
 	if err := goose.SetDialect(driver); err != nil {
 		log.Fatal(err)
@@ -67,19 +62,18 @@ func main() {
 		log.Fatalf("-dbstring=%q: %v\n", dbstring, err)
 	}
 
-	arguments := []string{}
+	var arguments []string
 	if len(args) > 3 {
 		arguments = append(arguments, args[3:]...)
 	}
 
-	if err := goose.Run(command, db, *dir, arguments...); err != nil {
+	if err := goose.Run(command, db, opt.Dir, opt.Table, arguments...); err != nil {
 		log.Fatalf("goose run: %v", err)
 	}
 }
 
 func usage() {
 	log.Print(usagePrefix)
-	flags.PrintDefaults()
 	log.Print(usageCommands)
 }
 
