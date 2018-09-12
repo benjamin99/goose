@@ -27,10 +27,10 @@ func TestDefaultBinary(t *testing.T) {
 func TestDefaultBinaryWithSpecifiedTableName(t *testing.T) {
 	commands := []string{
 		"go build -i -o goose ./cmd/goose",
-		"./goose -dir=examples/sql-migrations sqlite3 sql2.db up goose_db_version_2",
-		"./goose -dir=examples/sql-migrations sqlite3 sql2.db version goose_db_version_2",
-		"./goose -dir=examples/sql-migrations sqlite3 sql2.db down goose_db_version_2",
-		"./goose -dir=examples/sql-migrations sqlite3 sql2.db status goose_db_version_2",
+		"./goose -dir=examples/sql-migrations -table=goose_db_version_2 sqlite3 sql2.db up",
+		"./goose -dir=examples/sql-migrations -table=goose_db_version_2 sqlite3 sql2.db version",
+		"./goose -dir=examples/sql-migrations -table=goose_db_version_2 sqlite3 sql2.db down",
+		"./goose -dir=examples/sql-migrations -table=goose_db_version_2 sqlite3 sql2.db status",
 	}
 
 	for _, cmd := range commands {
@@ -41,8 +41,6 @@ func TestDefaultBinaryWithSpecifiedTableName(t *testing.T) {
 		}
 	}
 }
-
-
 
 func TestCustomBinary(t *testing.T) {
 	commands := []string{
